@@ -440,46 +440,46 @@
         <div class="kpi-grid">
           <div class="kpi-card scans">
             <div class="kpi-top">
-              <span class="kpi-title">Total URLs Analyzed</span>
+              <span class="kpi-title">Total Links Analyzed</span>
               <div class="kpi-icon">
                 <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
               </div>
             </div>
-            <div class="kpi-value" id="kpiTotalScans">0</div>
+            <div class="kpi-value" id="kpiTotalScans">12</div>
             <div class="kpi-sub">Continuous live heuristic audit</div>
-          </div>
-
-          <div class="kpi-card phishing">
-            <div class="kpi-top">
-              <span class="kpi-title">Phishing Intercepted</span>
-              <div class="kpi-icon" style="color: var(--color-danger);">
-                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"/></svg>
-              </div>
-            </div>
-            <div class="kpi-value" id="kpiPhishingBlocked" style="color: var(--color-danger);">0</div>
-            <div class="kpi-sub">High-severity spoofing attempts</div>
           </div>
 
           <div class="kpi-card safe">
             <div class="kpi-top">
-              <span class="kpi-title">Legitimate Verified</span>
+              <span class="kpi-title">Confirmed Safe</span>
               <div class="kpi-icon" style="color: var(--color-safe);">
                 <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="20 6 9 17 4 12"/></svg>
               </div>
             </div>
-            <div class="kpi-value" id="kpiSafeVerified" style="color: var(--color-safe);">0</div>
+            <div class="kpi-value" id="kpiSafeVerified" style="color: var(--color-safe);">6</div>
             <div class="kpi-sub">Clean reputational standing</div>
           </div>
 
-          <div class="kpi-card speed">
+          <div class="kpi-card phishing">
             <div class="kpi-top">
-              <span class="kpi-title">Avg Latency</span>
-              <div class="kpi-icon" style="color: var(--color-warning);">
-                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></svg>
+              <span class="kpi-title">Phishing Attacks Blocked</span>
+              <div class="kpi-icon" style="color: var(--color-danger);">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"/></svg>
               </div>
             </div>
-            <div class="kpi-value" id="kpiAvgSpeed" style="color: var(--color-warning);">215ms</div>
-            <div class="kpi-sub">Real-time edge computation</div>
+            <div class="kpi-value" id="kpiPhishingBlocked" style="color: var(--color-danger);">4</div>
+            <div class="kpi-sub">High-severity spoofing attempts</div>
+          </div>
+
+          <div class="kpi-card suspicious">
+            <div class="kpi-top">
+              <span class="kpi-title">Suspicious Activity</span>
+              <div class="kpi-icon" style="color: var(--color-warning);">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>
+              </div>
+            </div>
+            <div class="kpi-value" id="kpiSuspicious" style="color: var(--color-warning);">2</div>
+            <div class="kpi-sub">Moderate risk flags detected</div>
           </div>
         </div>
 

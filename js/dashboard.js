@@ -5,7 +5,7 @@
 
 class SecurityDashboard {
   constructor() {
-    this.storageKey = 'phishguard_scan_history_v1';
+    this.storageKey = 'phishguard_scan_history_v2';
     this.history = this.loadHistory();
     this.currentFilter = 'all';
     this.searchQuery = '';
@@ -18,6 +18,7 @@ class SecurityDashboard {
 
   seedDefaultHistory() {
     const demoItems = [
+      // 4 Phishing Attacks Blocked
       {
         url: 'http://paypa1-security-verification.xyz/login.php',
         hostname: 'paypa1-security-verification.xyz',
@@ -25,10 +26,69 @@ class SecurityDashboard {
         verdict: 'PHISHING DETECTED',
         verdictSeverity: 'danger',
         impersonatedBrand: 'PayPal',
-        scannedAt: new Date(Date.now() - 1000 * 60 * 14).toISOString(),
+        scannedAt: new Date(Date.now() - 1000 * 60 * 10).toISOString(),
         latencyMs: 240,
         flagsCount: 4
       },
+      {
+        url: 'http://free-crypto-giveaway.top/claim-bonus',
+        hostname: 'free-crypto-giveaway.top',
+        riskScore: 88,
+        verdict: 'PHISHING DETECTED',
+        verdictSeverity: 'danger',
+        impersonatedBrand: null,
+        scannedAt: new Date(Date.now() - 1000 * 60 * 25).toISOString(),
+        latencyMs: 290,
+        flagsCount: 3
+      },
+      {
+        url: 'http://192.168.1.105/auth/secure-login',
+        hostname: '192.168.1.105',
+        riskScore: 91,
+        verdict: 'PHISHING DETECTED',
+        verdictSeverity: 'danger',
+        impersonatedBrand: null,
+        scannedAt: new Date(Date.now() - 1000 * 60 * 40).toISOString(),
+        latencyMs: 210,
+        flagsCount: 4
+      },
+      {
+        url: 'http://micros0ft-account-verify.buzz/login',
+        hostname: 'micros0ft-account-verify.buzz',
+        riskScore: 96,
+        verdict: 'PHISHING DETECTED',
+        verdictSeverity: 'danger',
+        impersonatedBrand: 'Microsoft',
+        scannedAt: new Date(Date.now() - 1000 * 60 * 55).toISOString(),
+        latencyMs: 225,
+        flagsCount: 5
+      },
+
+      // 2 Suspicious Activity
+      {
+        url: 'https://bit.ly/3xSecurityUpdate',
+        hostname: 'bit.ly',
+        riskScore: 48,
+        verdict: 'SUSPICIOUS',
+        verdictSeverity: 'warning',
+        impersonatedBrand: null,
+        scannedAt: new Date(Date.now() - 1000 * 60 * 70).toISOString(),
+        latencyMs: 195,
+        flagsCount: 2
+      },
+      {
+        url: 'http://account-update-portal.info/verify',
+        hostname: 'account-update-portal.info',
+        riskScore: 52,
+        verdict: 'SUSPICIOUS',
+        verdictSeverity: 'warning',
+        impersonatedBrand: null,
+        scannedAt: new Date(Date.now() - 1000 * 60 * 85).toISOString(),
+        latencyMs: 205,
+        flagsCount: 2
+      },
+
+      // 6 Confirmed Safe
       {
         url: 'https://www.google.com',
         hostname: 'www.google.com',
@@ -36,31 +96,9 @@ class SecurityDashboard {
         verdict: 'SAFE',
         verdictSeverity: 'safe',
         impersonatedBrand: null,
-        scannedAt: new Date(Date.now() - 1000 * 60 * 45).toISOString(),
-        latencyMs: 185,
+        scannedAt: new Date(Date.now() - 1000 * 60 * 100).toISOString(),
+        latencyMs: 180,
         flagsCount: 0
-      },
-      {
-        url: 'http://free-crypto-giveaway.top/claim-bonus',
-        hostname: 'free-crypto-giveaway.top',
-        riskScore: 68,
-        verdict: 'PHISHING DETECTED',
-        verdictSeverity: 'danger',
-        impersonatedBrand: null,
-        scannedAt: new Date(Date.now() - 1000 * 60 * 120).toISOString(),
-        latencyMs: 290,
-        flagsCount: 3
-      },
-      {
-        url: 'https://bit.ly/3xSecurityUpdate',
-        hostname: 'bit.ly',
-        riskScore: 42,
-        verdict: 'SUSPICIOUS',
-        verdictSeverity: 'warning',
-        impersonatedBrand: null,
-        scannedAt: new Date(Date.now() - 1000 * 60 * 240).toISOString(),
-        latencyMs: 210,
-        flagsCount: 1
       },
       {
         url: 'https://github.com',
@@ -69,8 +107,52 @@ class SecurityDashboard {
         verdict: 'SAFE',
         verdictSeverity: 'safe',
         impersonatedBrand: null,
-        scannedAt: new Date(Date.now() - 1000 * 60 * 360).toISOString(),
+        scannedAt: new Date(Date.now() - 1000 * 60 * 120).toISOString(),
+        latencyMs: 190,
+        flagsCount: 0
+      },
+      {
+        url: 'https://www.microsoft.com',
+        hostname: 'www.microsoft.com',
+        riskScore: 2,
+        verdict: 'SAFE',
+        verdictSeverity: 'safe',
+        impersonatedBrand: null,
+        scannedAt: new Date(Date.now() - 1000 * 60 * 140).toISOString(),
+        latencyMs: 185,
+        flagsCount: 0
+      },
+      {
+        url: 'https://www.apple.com',
+        hostname: 'www.apple.com',
+        riskScore: 2,
+        verdict: 'SAFE',
+        verdictSeverity: 'safe',
+        impersonatedBrand: null,
+        scannedAt: new Date(Date.now() - 1000 * 60 * 160).toISOString(),
+        latencyMs: 175,
+        flagsCount: 0
+      },
+      {
+        url: 'https://www.amazon.com',
+        hostname: 'www.amazon.com',
+        riskScore: 5,
+        verdict: 'SAFE',
+        verdictSeverity: 'safe',
+        impersonatedBrand: null,
+        scannedAt: new Date(Date.now() - 1000 * 60 * 180).toISOString(),
         latencyMs: 195,
+        flagsCount: 0
+      },
+      {
+        url: 'https://www.paypal.com',
+        hostname: 'www.paypal.com',
+        riskScore: 3,
+        verdict: 'SAFE',
+        verdictSeverity: 'safe',
+        impersonatedBrand: null,
+        scannedAt: new Date(Date.now() - 1000 * 60 * 200).toISOString(),
+        latencyMs: 188,
         flagsCount: 0
       }
     ];
@@ -133,19 +215,17 @@ class SecurityDashboard {
     const totalScansEl = document.getElementById('kpiTotalScans');
     const phishingEl = document.getElementById('kpiPhishingBlocked');
     const safeEl = document.getElementById('kpiSafeVerified');
-    const speedEl = document.getElementById('kpiAvgSpeed');
+    const suspiciousEl = document.getElementById('kpiSuspicious');
 
     const total = this.history.length;
     const phishing = this.history.filter(h => h.verdictSeverity === 'danger').length;
     const safe = this.history.filter(h => h.verdictSeverity === 'safe').length;
-    const avgLatency = total > 0 
-      ? Math.round(this.history.reduce((acc, h) => acc + (h.latencyMs || 220), 0) / total)
-      : 215;
+    const suspicious = this.history.filter(h => h.verdictSeverity === 'warning').length;
 
     if (totalScansEl) this.animateValue(totalScansEl, total);
     if (phishingEl) this.animateValue(phishingEl, phishing);
     if (safeEl) this.animateValue(safeEl, safe);
-    if (speedEl) speedEl.textContent = `${avgLatency}ms`;
+    if (suspiciousEl) this.animateValue(suspiciousEl, suspicious);
   }
 
   animateValue(element, target) {
