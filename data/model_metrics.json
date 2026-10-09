@@ -1,0 +1,159 @@
+{
+  "timestamp": "2026-10-09T09:37:44Z",
+  "dataset_size": 2400,
+  "train_samples": 1920,
+  "test_samples": 480,
+  "features_count": 24,
+  "champion_model": "Random Forest",
+  "champion_metrics": {
+    "cv_f1_mean": 1.0,
+    "cv_f1_std": 0.0,
+    "accuracy": 1.0,
+    "precision": 1.0,
+    "recall": 1.0,
+    "f1_score": 1.0,
+    "roc_auc": 1.0,
+    "confusion_matrix": [
+      [
+        240,
+        0
+      ],
+      [
+        0,
+        240
+      ]
+    ],
+    "training_time_sec": 3.666
+  },
+  "all_models_comparison": {
+    "Random Forest": {
+      "cv_f1_mean": 1.0,
+      "cv_f1_std": 0.0,
+      "accuracy": 1.0,
+      "precision": 1.0,
+      "recall": 1.0,
+      "f1_score": 1.0,
+      "roc_auc": 1.0,
+      "confusion_matrix": [
+        [
+          240,
+          0
+        ],
+        [
+          0,
+          240
+        ]
+      ],
+      "training_time_sec": 3.666
+    },
+    "Gradient Boosting": {
+      "cv_f1_mean": 1.0,
+      "cv_f1_std": 0.0,
+      "accuracy": 1.0,
+      "precision": 1.0,
+      "recall": 1.0,
+      "f1_score": 1.0,
+      "roc_auc": 1.0,
+      "confusion_matrix": [
+        [
+          240,
+          0
+        ],
+        [
+          0,
+          240
+        ]
+      ],
+      "training_time_sec": 6.407
+    },
+    "Logistic Regression (Scaled)": {
+      "cv_f1_mean": 1.0,
+      "cv_f1_std": 0.0,
+      "accuracy": 1.0,
+      "precision": 1.0,
+      "recall": 1.0,
+      "f1_score": 1.0,
+      "roc_auc": 1.0,
+      "confusion_matrix": [
+        [
+          240,
+          0
+        ],
+        [
+          0,
+          240
+        ]
+      ],
+      "training_time_sec": 0.328
+    }
+  },
+  "classification_report": {
+    "Legitimate": {
+      "precision": 1.0,
+      "recall": 1.0,
+      "f1-score": 1.0,
+      "support": 240.0
+    },
+    "Phishing": {
+      "precision": 1.0,
+      "recall": 1.0,
+      "f1-score": 1.0,
+      "support": 240.0
+    },
+    "accuracy": 1.0,
+    "macro avg": {
+      "precision": 1.0,
+      "recall": 1.0,
+      "f1-score": 1.0,
+      "support": 480.0
+    },
+    "weighted avg": {
+      "precision": 1.0,
+      "recall": 1.0,
+      "f1-score": 1.0,
+      "support": 480.0
+    }
+  },
+  "top_feature_importances": [
+    {
+      "feature": "is_https",
+      "importance": 0.1593
+    },
+    {
+      "feature": "has_high_risk_tld",
+      "importance": 0.1406
+    },
+    {
+      "feature": "keyword_count",
+      "importance": 0.1346
+    },
+    {
+      "feature": "digits_count",
+      "importance": 0.0849
+    },
+    {
+      "feature": "is_spoofing",
+      "importance": 0.0763
+    },
+    {
+      "feature": "is_verified_legit",
+      "importance": 0.0755
+    },
+    {
+      "feature": "digit_ratio",
+      "importance": 0.066
+    },
+    {
+      "feature": "subdomain_depth",
+      "importance": 0.0512
+    },
+    {
+      "feature": "hyphens_count",
+      "importance": 0.0492
+    },
+    {
+      "feature": "dots_count",
+      "importance": 0.0467
+    }
+  ]
+}

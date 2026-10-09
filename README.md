@@ -1,7 +1,9 @@
 # PhishGuard AI — Full-Stack Phishing Detection Platform
 **Project Roles**:
 - **Member 1 — Frontend**: Cyber HUD UI/UX, Radar Scanner, SVG Gauges, Responsive Telemetry Dashboard
-- **Member 3 — Backend**: FastAPI REST API, Threat Intelligence Engine, ML Model Connection, Input Validation & SSRF Guard
+- **Member 2 — Machine Learning**: Dataset Synthesis & Curation, 24-D Feature Engineering, Ensemble Classifier Training & Performance Benchmarking
+- **Member 3 — Backend**: FastAPI REST API, Threat Intelligence Engine, ML Model Integration, Input Validation & SSRF Guard
+
 
 ---
 
@@ -67,6 +69,26 @@ Extracts **18 structural, lexical, and behavioral features**:
 ### 4. Input Sanitization & SSRF Defense (`backend/validator.py`)
 - Pydantic schema validation for URL structure.
 - RFC 1918 private IP range filtering (`127.0.0.0/8`, `10.0.0.0/8`, `192.168.0.0/16`, `169.254.0.0/16`) to prevent Server-Side Request Forgery.
+
+---
+
+## 🤖 Machine Learning Pipeline (Member 2)
+
+### 1. Dataset Generation & Curation (`backend/dataset_generator.py`)
+- Balanced benchmark dataset of **2,400 labeled samples** (`1,200 Phishing` vs `1,200 Legitimate`).
+- Synthesizes zero-day attack patterns: typosquatting, DGA entropy, subdomain stacking, IP-based destinations, `@` credential obfuscation, disposable TLDs (`.xyz`, `.top`, `.tk`), and punycode.
+- Persisted at [data/phishing_dataset.csv](file:///c:/Users/GP/OneDrive/Desktop/Hack/data/phishing_dataset.csv).
+
+### 2. Feature Extraction (`backend/feature_pipeline.py`)
+- Extracts **24 numerical & lexical features** per URL in `< 0.1ms`.
+- Top predictive signals: `is_https`, `has_high_risk_tld`, `keyword_count`, `digits_count`, `is_spoofing`, `host_entropy`, and `subdomain_depth`.
+
+### 3. Model Training & Evaluation (`backend/train_model.py`)
+- Benchmarked **Random Forest**, **Gradient Boosting**, and **Logistic Regression**.
+- Evaluated via **Stratified 5-Fold Cross Validation** on holdout test splits.
+- Production artifact exported to [data/phishguard_model.joblib](file:///c:/Users/GP/OneDrive/Desktop/Hack/data/phishguard_model.joblib).
+- Comprehensive evaluation report at [data/model_evaluation_report.md](file:///c:/Users/GP/OneDrive/Desktop/Hack/data/model_evaluation_report.md).
+
 
 ---
 
