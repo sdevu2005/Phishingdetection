@@ -268,43 +268,52 @@ class QRScannerManager {
     reader.readAsDataURL(file);
   }
 
-  decodeImage(img) {
-    // Scale image down if it's extremely large (over 1200px) for optimal QR decoding performance
-    const maxDim = 1200;
-    let width = img.width;
-    let height = img.height;
-
-    if (width > maxDim || height > maxDim) {
-      if (width > height) {
-        height = Math.round((height * maxDim) / width);
-        width = maxDim;
-      } else {
-        width = Math.round((width * maxDim) / height);
-        height = maxDim;
+  async decodeImage(img) {
+    // 1. Try native BarcodeDetector API if available in modern browser
+    if ('BarcodeDetector' in window) {
+      try {
+        const detector = new BarcodeDetector({ formats: ['qr_code'] });
+        const barcodes = await detector.detect(img);
+        if (barcodes && barcodes.length > 0 && barcodes[0].rawValue) {
+          this.onQrFound(barcodes[0].rawValue);
+          return;
+        }
+      } catch (err) {
+        console.warn('Native BarcodeDetector pass skipped:', err);
       }
     }
 
-    const canvas = document.createElement('canvas');
-    const ctx = canvas.getContext('2d');
-    canvas.width = width;
-    canvas.height = height;
-    ctx.drawImage(img, 0, 0, width, height);
+    // 2. Multi-pass canvas decoding (Original size + Downscaled size) with jsQR
+    const scales = [1.0, 0.75, 0.5];
+    for (const scale of scales) {
+      const width = Math.round(img.width * scale);
+      const height = Math.round(img.height * scale);
+      if (width < 50 || height < 50) continue;
 
-    const imageData = ctx.getImageData(0, 0, canvas.width, canvas.height);
+      const canvas = document.createElement('canvas');
+      const ctx = canvas.getContext('2d');
+      canvas.width = width;
+      canvas.height = height;
+      ctx.drawImage(img, 0, 0, width, height);
 
-    if (window.jsQR) {
-      const code = jsQR(imageData.data, imageData.width, imageData.height, {
-        inversionAttempts: "attemptBoth",
-      });
+      const imageData = ctx.getImageData(0, 0, canvas.width, canvas.height);
 
-      if (code && code.data) {
-        this.onQrFound(code.data);
-      } else {
-        if (window.showToast) showToast('No valid QR code found in this image. Ensure lighting is clear & try another photo.', 'warning');
+      if (window.jsQR) {
+        const code = jsQR(imageData.data, imageData.width, imageData.height, {
+          inversionAttempts: "attemptBoth",
+        });
+
+        if (code && code.data) {
+          this.onQrFound(code.data);
+          return;
+        }
       }
-    } else {
-      // Fallback if jsQR library fails to load
+    }
+
+    if (!window.jsQR && !('BarcodeDetector' in window)) {
       if (window.showToast) showToast('QR processing engine unavailable. Check internet connection or reload page.', 'error');
+    } else {
+      if (window.showToast) showToast('No valid QR code found in this image. Ensure lighting is clear & try another photo.', 'warning');
     }
   }
 
@@ -331,7 +340,7 @@ class QRScannerManager {
     }
   }
 
-  scanCameraFrame() {
+  async scanCameraFrame() {
     if (!this.isScanningCamera) return;
 
     const video = document.getElementById('qrVideoFeed');
@@ -341,8 +350,24 @@ class QRScannerManager {
       canvas.width = video.videoWidth;
       const ctx = canvas.getContext('2d');
       ctx.drawImage(video, 0, 0, canvas.width, canvas.height);
-      const imageData = ctx.getImageData(0, 0, canvas.width, canvas.height);
 
+      // Try native BarcodeDetector on video element first
+      if ('BarcodeDetector' in window) {
+        try {
+          const detector = new BarcodeDetector({ formats: ['qr_code'] });
+          const barcodes = await detector.detect(video);
+          if (barcodes && barcodes.length > 0 && barcodes[0].rawValue) {
+            this.onQrFound(barcodes[0].rawValue);
+            this.stopCamera();
+            return;
+          }
+        } catch (e) {
+          // Fall through to jsQR
+        }
+      }
+
+      // Fall back to jsQR
+      const imageData = ctx.getImageData(0, 0, canvas.width, canvas.height);
       if (window.jsQR) {
         const code = jsQR(imageData.data, imageData.width, imageData.height, {
           inversionAttempts: "attemptBoth",
