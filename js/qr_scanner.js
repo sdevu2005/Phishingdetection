@@ -263,6 +263,8 @@ class QRScannerManager {
   resetScanner() {
     document.getElementById('qrResultCard').style.display = 'none';
     document.getElementById('qrPreviewArea').style.display = 'none';
+    const overlay = document.getElementById('qrScanningOverlay');
+    if (overlay) overlay.style.display = 'block';
     document.getElementById('qrDecodedUrlText').textContent = '';
     const fileInput = document.getElementById('qrFileInput');
     if (fileInput) fileInput.value = '';
@@ -280,6 +282,8 @@ class QRScannerManager {
       img.onload = () => {
         document.getElementById('qrPreviewImage').src = e.target.result;
         document.getElementById('qrPreviewArea').style.display = 'block';
+        const overlay = document.getElementById('qrScanningOverlay');
+        if (overlay) overlay.style.display = 'block';
         this.decodeImage(img);
       };
       img.src = e.target.result;
@@ -446,8 +450,19 @@ class QRScannerManager {
     if (window.sounds && window.sounds.beepStagePass) {
       window.sounds.beepStagePass();
     }
-    document.getElementById('qrResultCard').style.display = 'block';
-    document.getElementById('qrDecodedUrlText').textContent = decodedText;
+    const overlay = document.getElementById('qrScanningOverlay');
+    if (overlay) overlay.style.display = 'none';
+
+    const resultCard = document.getElementById('qrResultCard');
+    if (resultCard) {
+      resultCard.style.display = 'block';
+    }
+
+    const textEl = document.getElementById('qrDecodedUrlText');
+    if (textEl) {
+      textEl.textContent = decodedText;
+    }
+
     if (window.showToast) showToast('QR Code successfully decoded!', 'success');
   }
 }
