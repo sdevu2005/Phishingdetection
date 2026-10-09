@@ -90,7 +90,12 @@ document.addEventListener('DOMContentLoaded', () => {
     window.securityDashboard.render();
   }
 
-  // 8. Start Live Threat Telemetry ticker
+  // 8. Initialize QR Scanner
+  if (window.qrScanner) {
+    window.qrScanner.init();
+  }
+
+  // 9. Start Live Threat Telemetry ticker
   startLiveThreatStream();
 });
 

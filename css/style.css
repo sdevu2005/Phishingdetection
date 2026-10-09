@@ -1861,3 +1861,260 @@ h6 {
     color: #000000 !important;
   }
 }
+
+/* ==========================================================================
+   QR Code Scanner Cyber Modal & Tooling
+   ========================================================================== */
+.qr-modal-card {
+  max-width: 580px;
+  width: 90%;
+}
+
+.qr-subtitle {
+  color: var(--text-secondary);
+  font-size: 0.88rem;
+  margin-bottom: 1.25rem;
+}
+
+.qr-tabs {
+  display: flex;
+  gap: 0.5rem;
+  background: rgba(7, 10, 19, 0.6);
+  padding: 0.25rem;
+  border-radius: var(--radius-md);
+  border: 1px solid var(--border-subtle);
+  margin-bottom: 1.25rem;
+}
+
+.qr-tab-btn {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  padding: 0.65rem 1rem;
+  border: none;
+  background: transparent;
+  color: var(--text-secondary);
+  font-size: 0.85rem;
+  font-weight: 600;
+  border-radius: var(--radius-sm);
+  cursor: pointer;
+  transition: var(--transition-fast);
+}
+
+.qr-tab-btn:hover {
+  color: var(--text-primary);
+  background: rgba(255, 255, 255, 0.04);
+}
+
+.qr-tab-btn.active {
+  background: var(--bg-tertiary);
+  color: var(--cyber-cyan);
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.4);
+  border: 1px solid var(--border-card);
+}
+
+.qr-view-container {
+  display: none;
+}
+
+.qr-view-container.active {
+  display: block;
+}
+
+/* Dropzone */
+.qr-dropzone {
+  border: 2px dashed var(--border-card);
+  border-radius: var(--radius-lg);
+  padding: 2rem 1.5rem;
+  text-align: center;
+  background: rgba(13, 20, 38, 0.4);
+  transition: var(--transition-fast);
+  cursor: pointer;
+  position: relative;
+  overflow: hidden;
+}
+
+.qr-dropzone:hover,
+.qr-dropzone.dragover {
+  border-color: var(--cyber-cyan);
+  background: rgba(0, 242, 254, 0.05);
+}
+
+.qr-icon-wrapper {
+  color: var(--cyber-cyan);
+  margin-bottom: 1rem;
+  display: flex;
+  justify-content: center;
+}
+
+.dropzone-text strong {
+  display: block;
+  font-size: 1rem;
+  color: var(--text-primary);
+  margin-bottom: 0.25rem;
+}
+
+.dropzone-text span {
+  display: block;
+  font-size: 0.8rem;
+  color: var(--text-muted);
+  margin-bottom: 1.25rem;
+}
+
+.qr-preview-area {
+  position: relative;
+  max-height: 250px;
+  overflow: hidden;
+  border-radius: var(--radius-md);
+  margin-top: 1rem;
+}
+
+#qrPreviewImage {
+  width: 100%;
+  max-height: 250px;
+  object-fit: contain;
+  border-radius: var(--radius-md);
+}
+
+/* Camera Scanner View */
+.qr-camera-wrapper {
+  position: relative;
+  width: 100%;
+  height: 260px;
+  background: #000;
+  border-radius: var(--radius-lg);
+  overflow: hidden;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border: 1px solid var(--border-card);
+}
+
+#qrVideoFeed {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.camera-placeholder {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 1.5rem;
+  color: var(--text-muted);
+  text-align: center;
+  font-size: 0.85rem;
+}
+
+.camera-placeholder svg {
+  margin-bottom: 0.75rem;
+  color: var(--cyber-blue);
+}
+
+.qr-reticle {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: 180px;
+  height: 180px;
+  pointer-events: none;
+}
+
+.reticle-corner {
+  position: absolute;
+  width: 24px;
+  height: 24px;
+  border-color: var(--cyber-cyan);
+  border-style: solid;
+  border-width: 0;
+}
+
+.reticle-corner.top-left {
+  top: 0;
+  left: 0;
+  border-top-width: 3px;
+  border-left-width: 3px;
+}
+
+.reticle-corner.top-right {
+  top: 0;
+  right: 0;
+  border-top-width: 3px;
+  border-right-width: 3px;
+}
+
+.reticle-corner.bottom-left {
+  bottom: 0;
+  left: 0;
+  border-bottom-width: 3px;
+  border-left-width: 3px;
+}
+
+.reticle-corner.bottom-right {
+  bottom: 0;
+  right: 0;
+  border-bottom-width: 3px;
+  border-right-width: 3px;
+}
+
+.scan-laser-line {
+  position: absolute;
+  left: 0;
+  right: 0;
+  height: 2px;
+  background: linear-gradient(90deg, transparent, var(--cyber-cyan), transparent);
+  box-shadow: 0 0 12px var(--cyber-cyan);
+  animation: laserScan 2s linear infinite;
+}
+
+@keyframes laserScan {
+  0% { top: 0%; }
+  50% { top: 100%; }
+  100% { top: 0%; }
+}
+
+/* Result Card */
+.qr-result-card {
+  margin-top: 1.25rem;
+  background: rgba(0, 230, 118, 0.08);
+  border: 1px solid var(--color-safe-glow);
+  border-radius: var(--radius-md);
+  padding: 1.25rem;
+}
+
+.qr-result-header {
+  margin-bottom: 0.75rem;
+}
+
+.badge-safe {
+  background: var(--color-safe-bg);
+  color: var(--color-safe);
+  font-family: var(--font-mono);
+  font-size: 0.75rem;
+  font-weight: 700;
+  padding: 0.3rem 0.6rem;
+  border-radius: var(--radius-sm);
+  border: 1px solid var(--color-safe-glow);
+}
+
+.qr-result-url {
+  font-family: var(--font-mono);
+  font-size: 0.9rem;
+  color: var(--cyber-cyan);
+  word-break: break-all;
+  margin-bottom: 1.25rem;
+  background: rgba(7, 10, 19, 0.7);
+  padding: 0.75rem;
+  border-radius: var(--radius-sm);
+  border: 1px solid var(--border-subtle);
+}
+
+.qr-result-actions {
+  display: flex;
+  gap: 0.75rem;
+  justify-content: flex-end;
+}
