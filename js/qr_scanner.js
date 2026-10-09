@@ -67,9 +67,14 @@ class QRScannerManager {
                   <strong>Click or Drag & Drop QR Code Image</strong>
                   <span>Supports PNG, JPG, WEBP, GIF (Max 10MB)</span>
                 </div>
-                <button type="button" class="btn-secondary" id="browseQrFileBtn">
-                  Select QR Image File
-                </button>
+                <div style="display: flex; justify-content: center; gap: 0.5rem; margin-top: 1rem; flex-wrap: wrap;">
+                  <button type="button" class="btn-secondary" id="browseQrFileBtn">
+                    Select QR Image File
+                  </button>
+                  <button type="button" class="btn-secondary" id="testSampleQrBtn" style="border-color: var(--cyber-cyan); color: var(--cyber-cyan);">
+                    ⚡ Try Sample QR
+                  </button>
+                </div>
               </div>
               <div class="qr-preview-area" id="qrPreviewArea" style="display: none;">
                 <img id="qrPreviewImage" alt="QR Code Preview">
@@ -222,6 +227,20 @@ class QRScannerManager {
     resetQrBtn.addEventListener('click', () => {
       this.resetScanner();
     });
+
+    const testSampleBtn = document.getElementById('testSampleQrBtn');
+    if (testSampleBtn) {
+      testSampleBtn.addEventListener('click', (e) => {
+        e.stopPropagation();
+        const img = new Image();
+        img.onload = () => {
+          document.getElementById('qrPreviewImage').src = img.src;
+          document.getElementById('qrPreviewArea').style.display = 'block';
+          this.decodeImage(img);
+        };
+        img.src = 'assets/test_qr.png';
+      });
+    }
   }
 
   openModal() {
@@ -299,7 +318,28 @@ class QRScannerManager {
       const imageData = ctx.getImageData(0, 0, canvas.width, canvas.height);
 
       if (window.jsQR) {
-        const code = jsQR(imageData.data, imageData.width, imageData.height, {
+        // Pass A: Normal ImageData
+        let code = jsQR(imageData.data, imageData.width, imageData.height, {
+          inversionAttempts: "attemptBoth",
+        });
+
+        if (code && code.data) {
+          this.onQrFound(code.data);
+          return;
+        }
+
+        // Pass B: Binarized Contrast-Enhanced ImageData (for low contrast photos)
+        const binarizedData = new Uint8ClampedArray(imageData.data.length);
+        for (let i = 0; i < imageData.data.length; i += 4) {
+          const avg = (imageData.data[i] + imageData.data[i + 1] + imageData.data[i + 2]) / 3;
+          const val = avg > 128 ? 255 : 0;
+          binarizedData[i] = val;
+          binarizedData[i + 1] = val;
+          binarizedData[i + 2] = val;
+          binarizedData[i + 3] = 255;
+        }
+
+        code = jsQR(binarizedData, imageData.width, imageData.height, {
           inversionAttempts: "attemptBoth",
         });
 
