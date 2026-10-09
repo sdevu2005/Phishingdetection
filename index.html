@@ -1,0 +1,684 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>PhishGuard AI — Intelligent Phishing Detection & Threat Scanner</title>
+  <meta name="description" content="Next-generation multi-stage phishing detection system. Features real-time homoglyph analysis, Shannon entropy scoring, SSL certificate inspection, and threat telemetry dashboard.">
+  
+  <!-- Google Fonts: Space Grotesk & JetBrains Mono -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;700&family=Space+Grotesk:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  
+  <!-- Main Stylesheet -->
+  <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+  <!-- Cyber Matrix Dust Background Canvas -->
+  <canvas id="matrixCanvas"></canvas>
+
+  <div class="app-wrapper">
+    <!-- ====================================================================
+         Navbar
+         ==================================================================== -->
+    <header class="navbar">
+      <div class="container">
+        <div class="brand" onclick="location.reload()">
+          <div class="brand-icon">
+            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/>
+              <circle cx="12" cy="11" r="3"/>
+            </svg>
+          </div>
+          <div class="brand-text">
+            <div class="brand-title">
+              PHISHGUARD<span>AI</span>
+              <span class="brand-badge">v2.4 HUD</span>
+            </div>
+            <div class="brand-sub">Autonomous Phishing & Threat Radar</div>
+          </div>
+        </div>
+
+        <nav>
+          <ul class="nav-links">
+            <li>
+              <a href="#scanner" class="nav-link active" data-tab="scanner" id="navScanner">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+                URL Scanner
+              </a>
+            </li>
+            <li>
+              <a href="#dashboard" class="nav-link" data-tab="dashboard" id="navDashboard">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="7" height="9"/><rect x="14" y="3" width="7" height="5"/><rect x="14" y="12" width="7" height="9"/><rect x="3" y="16" width="7" height="5"/></svg>
+                Threat Dashboard
+              </a>
+            </li>
+          </ul>
+        </nav>
+
+        <div class="nav-actions">
+          <div class="status-indicator">
+            <div class="status-dot"></div>
+            <span>DEFCON 4 · ONLINE</span>
+          </div>
+
+          <button class="btn-icon" id="toggleSoundBtn" title="Toggle Audio Chimes">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"/><path d="M19.07 4.93a10 10 0 0 1 0 14.14M15.54 8.46a5 5 0 0 1 0 7.07"/></svg>
+          </button>
+
+          <button class="btn-icon" id="apiSettingsBtn" title="Backend Bridge & API Settings">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg>
+          </button>
+        </div>
+      </div>
+    </header>
+
+    <!-- Main Content Container -->
+    <main class="container">
+      
+      <!-- ==================================================================
+           Scanner Section Group (Hero + Input + Pipeline + Report)
+           ================================================================== -->
+      <div id="scannerSectionGroup">
+        
+        <!-- Hero Section -->
+        <section class="hero-section">
+          <div class="hero-pill">
+            <span class="status-dot"></span>
+            <span id="liveThreatTicker">
+              GLOBAL FEED: Monitoring 450,000+ malicious vectors
+            </span>
+          </div>
+
+          <h1 class="hero-title">
+            Stop Phishing Attacks Before They <span class="text-gradient">Compromise You.</span>
+          </h1>
+
+          <p class="hero-subtitle">
+            Zero-day malicious URL detection combining homoglyph heuristics, Shannon lexical entropy, SSL certificate integrity, and autonomous threat intelligence.
+          </p>
+
+          <!-- Scanner Input Card -->
+          <div class="scanner-card">
+            <form id="scannerForm" onsubmit="return false;">
+              <div class="scanner-input-group">
+                <div class="scanner-protocol-badge">
+                  <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><line x1="2" y1="12" x2="22" y2="12"/><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/></svg>
+                  <span>URL</span>
+                </div>
+
+                <input 
+                  type="text" 
+                  id="urlInput" 
+                  class="scanner-input" 
+                  placeholder="Paste suspicious link or domain (e.g. paypa1-verification.xyz/login)..."
+                  autocomplete="off"
+                  spellcheck="false"
+                >
+
+                <div class="scanner-tools">
+                  <button type="button" class="btn-tool" id="pasteUrlBtn" title="Paste from clipboard">
+                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M16 4h2a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2h2"/><rect x="8" y="2" width="8" height="4" rx="1" ry="1"/></svg>
+                  </button>
+                  <button type="button" class="btn-tool" id="clearUrlBtn" title="Clear input">
+                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+                  </button>
+                </div>
+
+                <button type="submit" class="btn-scan" id="analyzeBtn">
+                  <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></svg>
+                  ANALYZE URL
+                </button>
+              </div>
+
+              <!-- Sample URLs & Settings -->
+              <div class="scanner-extras">
+                <div class="sample-urls">
+                  <span class="sample-label">Quick Test Samples:</span>
+                  <button type="button" class="sample-pill" data-url="http://paypa1-security-verification.xyz/login.php">
+                    <span class="sample-dot danger"></span>
+                    paypa1-verification.xyz
+                  </button>
+                  <button type="button" class="sample-pill" data-url="http://free-crypto-giveaway.top/claim-bonus">
+                    <span class="sample-dot warn"></span>
+                    crypto-giveaway.top
+                  </button>
+                  <button type="button" class="sample-pill" data-url="http://192.168.1.105/auth/secure-login">
+                    <span class="sample-dot danger"></span>
+                    192.168.1.105 (IP Host)
+                  </button>
+                  <button type="button" class="sample-pill" data-url="https://www.google.com">
+                    <span class="sample-dot safe"></span>
+                    google.com (Safe)
+                  </button>
+                </div>
+
+                <div class="scanner-settings">
+                  <label class="custom-checkbox">
+                    <input type="checkbox" id="checkEntropy" checked>
+                    <span>Entropy Matrix</span>
+                  </label>
+                  <label class="custom-checkbox">
+                    <input type="checkbox" id="checkSsl" checked>
+                    <span>SSL Chain</span>
+                  </label>
+                </div>
+              </div>
+            </form>
+          </div>
+        </section>
+
+        <!-- ================================================================
+             Multi-Stage Scan Pipeline Modal / Loading HUD
+             ================================================================ -->
+        <section class="scan-pipeline-modal" id="scanPipeline">
+          <div class="pipeline-header">
+            <div class="pipeline-target">
+              <div class="radar-spinner"></div>
+              <div class="pipeline-target-text">
+                <h4>Analyzing Target Threat Profile</h4>
+                <p id="pipelineTargetUrl" class="mono">https://...</p>
+              </div>
+            </div>
+            <div class="pipeline-percent" id="pipelinePercent">0%</div>
+          </div>
+
+          <div class="progress-container">
+            <div class="progress-bar-fill" id="pipelineProgressBar"></div>
+          </div>
+
+          <!-- 4 Pipeline Stages -->
+          <div class="pipeline-stages">
+            <div class="stage-card pending" id="stage1">
+              <div class="stage-top">
+                <div class="stage-icon">
+                  <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="M2 12h20"/></svg>
+                </div>
+                <span class="stage-status-badge">Pending</span>
+              </div>
+              <div class="stage-title">1. DNS & Network</div>
+              <div class="stage-desc">ASN telemetry, reverse PTR, resolving authoritative nameservers.</div>
+            </div>
+
+            <div class="stage-card pending" id="stage2">
+              <div class="stage-top">
+                <div class="stage-icon">
+                  <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>
+                </div>
+                <span class="stage-status-badge">Pending</span>
+              </div>
+              <div class="stage-title">2. SSL / TLS Handshake</div>
+              <div class="stage-desc">Certificate chain, CA authority, cipher encryption strength.</div>
+            </div>
+
+            <div class="stage-card pending" id="stage3">
+              <div class="stage-top">
+                <div class="stage-icon">
+                  <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="4 7 4 4 20 4 20 7"/><line x1="9" y1="20" x2="15" y2="20"/><line x1="12" y1="4" x2="12" y2="20"/></svg>
+                </div>
+                <span class="stage-status-badge">Pending</span>
+              </div>
+              <div class="stage-title">3. Lexical & Homoglyph</div>
+              <div class="stage-desc">Shannon entropy, Cyrillic lookalikes, brand typosquatting.</div>
+            </div>
+
+            <div class="stage-card pending" id="stage4">
+              <div class="stage-top">
+                <div class="stage-icon">
+                  <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 2a10 10 0 1 0 10 10H12V2z"/></svg>
+                </div>
+                <span class="stage-status-badge">Pending</span>
+              </div>
+              <div class="stage-title">4. AI Phishing Model</div>
+              <div class="stage-desc">Neural heuristic classification & credential harvesting indicators.</div>
+            </div>
+          </div>
+
+          <!-- Diagnostic Terminal Console -->
+          <div class="console-box" id="consoleLog">
+            <!-- Appended dynamically -->
+          </div>
+        </section>
+
+        <!-- ================================================================
+             Comprehensive Risk Report Section
+             ================================================================ -->
+        <section class="report-section" id="reportSection">
+          
+          <!-- Verdict Banner -->
+          <div class="verdict-banner safe" id="verdictBanner">
+            <div class="verdict-info">
+              <div class="verdict-badge-row">
+                <span class="verdict-tag" id="verdictBadge">SAFE</span>
+                <span class="scanned-timestamp" id="verdictTime">2026-10-09 11:46 UTC</span>
+              </div>
+              <h2 class="verdict-title" id="verdictTitle">Verified Legitimate Destination</h2>
+              <div class="verdict-url-box">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"/><path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"/></svg>
+                <span class="verdict-url-text" id="verdictUrl">https://www.google.com</span>
+              </div>
+            </div>
+
+            <!-- Risk Score Circular Gauge -->
+            <div class="gauge-wrapper">
+              <div class="gauge-svg-container">
+                <svg width="140" height="140" viewBox="0 0 140 140">
+                  <circle class="gauge-circle-bg" cx="70" cy="70" r="58"></circle>
+                  <circle class="gauge-circle-val" id="gaugeCircle" cx="70" cy="70" r="58"></circle>
+                </svg>
+                <div class="gauge-center-text">
+                  <div class="gauge-number" id="gaugeNumber">0</div>
+                  <div class="gauge-label">RISK SCORE</div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Brand Impersonation Alert Banner -->
+          <div class="brand-alert-banner" id="brandImpersonationBanner">
+            <div class="brand-alert-icon">⚠️</div>
+            <div class="brand-alert-content">
+              <h4>Active Brand Spoofing Detected</h4>
+              <p>This malicious URL is attempting to deceive users by disguising itself as <strong id="brandTargetName" style="color: #fff;">PayPal</strong>.</p>
+            </div>
+          </div>
+
+          <!-- Action Toolbar -->
+          <div class="report-toolbar">
+            <div class="report-toolbar-left">
+              <span>Detailed Telemetry Breakdown & Heuristic Indicators</span>
+            </div>
+            <div class="report-toolbar-actions">
+              <button class="btn-secondary" onclick="window.copyReportSummary()">
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg>
+                Copy Summary
+              </button>
+              <button class="btn-secondary" onclick="window.exportReportJSON()">
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+                Export JSON
+              </button>
+              <button class="btn-secondary" onclick="window.printReport()">
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="6 9 6 2 18 2 18 9"/><path d="M6 18H4a2 2 0 0 1-2-2v-5a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2v5a2 2 0 0 1-2 2h-2"/><rect x="6" y="14" width="12" height="8"/></svg>
+                Print PDF
+              </button>
+            </div>
+          </div>
+
+          <!-- 4 Detailed Metric Cards Grid -->
+          <div class="report-grid">
+            
+            <!-- Card 1: SSL & Certificate Security -->
+            <div class="report-card">
+              <div class="report-card-header">
+                <div class="report-card-title">
+                  <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>
+                  <span>SSL / TLS Encryption</span>
+                </div>
+                <span class="report-card-badge safe">Verified Chain</span>
+              </div>
+              <div class="detail-list">
+                <div class="detail-row">
+                  <span class="detail-key">Certificate Status</span>
+                  <span class="detail-val safe" id="metricSslValid">Active & Valid</span>
+                </div>
+                <div class="detail-row">
+                  <span class="detail-key">Issuing Authority</span>
+                  <span class="detail-val" id="metricSslIssuer">DigiCert Global Root G2</span>
+                </div>
+                <div class="detail-row">
+                  <span class="detail-key">Cipher Protocol</span>
+                  <span class="detail-val" id="metricSslProtocol">TLS 1.3 (AEAD-AES256-GCM)</span>
+                </div>
+              </div>
+            </div>
+
+            <!-- Card 2: Domain & WHOIS Intelligence -->
+            <div class="report-card">
+              <div class="report-card-header">
+                <div class="report-card-title">
+                  <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><line x1="2" y1="12" x2="22" y2="12"/><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/></svg>
+                  <span>Domain & WHOIS Intel</span>
+                </div>
+                <span class="report-card-badge safe">Reputation OK</span>
+              </div>
+              <div class="detail-list">
+                <div class="detail-row">
+                  <span class="detail-key">Domain Age</span>
+                  <span class="detail-val" id="metricDomainAge">15+ Years</span>
+                </div>
+                <div class="detail-row">
+                  <span class="detail-key">Registrar</span>
+                  <span class="detail-val" id="metricRegistrar">MarkMonitor Inc.</span>
+                </div>
+                <div class="detail-row">
+                  <span class="detail-key">Routing ASN</span>
+                  <span class="detail-val" id="metricAsn">AS15169 Google LLC</span>
+                </div>
+                <div class="detail-row">
+                  <span class="detail-key">Hosting Country</span>
+                  <span class="detail-val" id="metricCountry">United States (US)</span>
+                </div>
+              </div>
+            </div>
+
+            <!-- Card 3: Lexical & Homoglyph Engine -->
+            <div class="report-card">
+              <div class="report-card-header">
+                <div class="report-card-title">
+                  <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="4 7 4 4 20 4 20 7"/><line x1="9" y1="20" x2="15" y2="20"/><line x1="12" y1="4" x2="12" y2="20"/></svg>
+                  <span>Lexical & Homoglyph Engine</span>
+                </div>
+                <span class="report-card-badge safe">Analysis Complete</span>
+              </div>
+              <div class="detail-list">
+                <div class="detail-row">
+                  <span class="detail-key">Shannon Entropy</span>
+                  <span class="detail-val" id="metricEntropy">2.41 bits</span>
+                </div>
+                <div class="detail-row">
+                  <span class="detail-key">Subdomain Depth</span>
+                  <span class="detail-val" id="metricSubdomains">1</span>
+                </div>
+                <div class="detail-row">
+                  <span class="detail-key">Raw IP Host</span>
+                  <span class="detail-val safe" id="metricHasIp">No</span>
+                </div>
+              </div>
+            </div>
+
+            <!-- Card 4: Heuristic Threat Indicators -->
+            <div class="report-card">
+              <div class="report-card-header">
+                <div class="report-card-title">
+                  <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>
+                  <span>Heuristic Threat Flags</span>
+                </div>
+                <span class="report-card-badge warn">Telemetry</span>
+              </div>
+              <div class="flags-list" id="flagsContainer">
+                <!-- Appended dynamically -->
+              </div>
+            </div>
+
+          </div>
+
+          <!-- Actionable Recommendations Card -->
+          <div class="recommendation-box">
+            <div class="recommendation-header">
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="var(--cyber-cyan)" stroke-width="2"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
+              <h3>Actionable Security Recommendations</h3>
+            </div>
+            <ul class="recommendation-list" id="recommendationList">
+              <!-- Appended dynamically -->
+            </ul>
+          </div>
+
+          <!-- Raw JSON Details Accordion -->
+          <details class="raw-json-details">
+            <summary class="raw-json-summary">{ } Inspect Raw AI Pipeline JSON Payload</summary>
+            <pre class="raw-json-code" id="rawJsonCode"></pre>
+          </details>
+
+        </section>
+
+      </div>
+
+      <!-- ==================================================================
+           Responsive Threat Dashboard Section
+           ================================================================== -->
+      <section class="dashboard-section" id="dashboardSection">
+        
+        <!-- KPI Metrics Row -->
+        <div class="kpi-grid">
+          <div class="kpi-card scans">
+            <div class="kpi-top">
+              <span class="kpi-title">Total URLs Analyzed</span>
+              <div class="kpi-icon">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+              </div>
+            </div>
+            <div class="kpi-value" id="kpiTotalScans">0</div>
+            <div class="kpi-sub">Continuous live heuristic audit</div>
+          </div>
+
+          <div class="kpi-card phishing">
+            <div class="kpi-top">
+              <span class="kpi-title">Phishing Intercepted</span>
+              <div class="kpi-icon" style="color: var(--color-danger);">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"/></svg>
+              </div>
+            </div>
+            <div class="kpi-value" id="kpiPhishingBlocked" style="color: var(--color-danger);">0</div>
+            <div class="kpi-sub">High-severity spoofing attempts</div>
+          </div>
+
+          <div class="kpi-card safe">
+            <div class="kpi-top">
+              <span class="kpi-title">Legitimate Verified</span>
+              <div class="kpi-icon" style="color: var(--color-safe);">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="20 6 9 17 4 12"/></svg>
+              </div>
+            </div>
+            <div class="kpi-value" id="kpiSafeVerified" style="color: var(--color-safe);">0</div>
+            <div class="kpi-sub">Clean reputational standing</div>
+          </div>
+
+          <div class="kpi-card speed">
+            <div class="kpi-top">
+              <span class="kpi-title">Avg Latency</span>
+              <div class="kpi-icon" style="color: var(--color-warning);">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></svg>
+              </div>
+            </div>
+            <div class="kpi-value" id="kpiAvgSpeed" style="color: var(--color-warning);">215ms</div>
+            <div class="kpi-sub">Real-time edge computation</div>
+          </div>
+        </div>
+
+        <!-- Charts Grid -->
+        <div class="charts-grid">
+          
+          <!-- Chart 1: 7-Day Trend Chart -->
+          <div class="chart-card">
+            <div class="chart-header">
+              <h3 class="chart-title">7-Day Threat Vector Volume</h3>
+              <span class="chart-badge">Telemetry</span>
+            </div>
+            <div class="svg-chart-container" id="weeklyTrendChart">
+              <!-- Rendered via js/dashboard.js -->
+            </div>
+            <div class="chart-legend">
+              <div class="legend-item">
+                <div class="legend-color" style="background: #00e676;"></div>
+                <span>Safe Traffic Volume</span>
+              </div>
+              <div class="legend-item">
+                <div class="legend-color" style="background: #ff2a5f;"></div>
+                <span>Phishing & Malicious Blocked</span>
+              </div>
+            </div>
+          </div>
+
+          <!-- Chart 2: Attack Vector Breakdown & Targeted Brands -->
+          <div class="chart-card">
+            <div class="chart-header">
+              <h3 class="chart-title">Attack Vectors</h3>
+              <span class="chart-badge">Distribution</span>
+            </div>
+            <div class="vectors-list">
+              <div class="vector-row">
+                <div class="vector-meta">
+                  <span>Credential Harvesting</span>
+                  <span class="mono" style="color: var(--color-danger);">42%</span>
+                </div>
+                <div class="vector-bar-bg">
+                  <div class="vector-bar-val" style="width: 42%; background: var(--color-danger);"></div>
+                </div>
+              </div>
+
+              <div class="vector-row">
+                <div class="vector-meta">
+                  <span>Brand Typosquatting</span>
+                  <span class="mono" style="color: var(--color-warning);">28%</span>
+                </div>
+                <div class="vector-bar-bg">
+                  <div class="vector-bar-val" style="width: 28%; background: var(--color-warning);"></div>
+                </div>
+              </div>
+
+              <div class="vector-row">
+                <div class="vector-meta">
+                  <span>High-Risk / Throwaway TLDs</span>
+                  <span class="mono" style="color: var(--cyber-cyan);">18%</span>
+                </div>
+                <div class="vector-bar-bg">
+                  <div class="vector-bar-val" style="width: 18%; background: var(--cyber-cyan);"></div>
+                </div>
+              </div>
+
+              <div class="vector-row">
+                <div class="vector-meta">
+                  <span>Direct IP Host Obfuscation</span>
+                  <span class="mono" style="color: #a855f7;">12%</span>
+                </div>
+                <div class="vector-bar-bg">
+                  <div class="vector-bar-val" style="width: 12%; background: #a855f7;"></div>
+                </div>
+              </div>
+            </div>
+
+            <!-- Top Targeted Brands Mini-Meter -->
+            <div style="margin-top: 1.5rem; border-top: 1px solid var(--border-subtle); padding-top: 1rem;">
+              <h4 style="font-size: 0.85rem; color: var(--text-secondary); margin-bottom: 0.75rem;">Top Targeted Brands</h4>
+              <div style="display: flex; gap: 0.5rem; flex-wrap: wrap;">
+                <span class="brand-badge" style="background: rgba(0,242,254,0.08);">PayPal (34%)</span>
+                <span class="brand-badge" style="background: rgba(0,242,254,0.08);">Microsoft 365 (26%)</span>
+                <span class="brand-badge" style="background: rgba(0,242,254,0.08);">Google (19%)</span>
+                <span class="brand-badge" style="background: rgba(0,242,254,0.08);">Apple (12%)</span>
+              </div>
+            </div>
+          </div>
+
+        </div>
+
+        <!-- Scan History Table -->
+        <div class="history-section-wrapper">
+          <div class="history-header">
+            <div class="history-title-group">
+              <h3>Recent Security Audit Log</h3>
+              <p>Filter, search, and review historical threat evaluations.</p>
+            </div>
+
+            <div class="history-controls">
+              <div class="filter-pills">
+                <button type="button" class="filter-pill active" data-filter="all">All</button>
+                <button type="button" class="filter-pill" data-filter="danger">Phishing</button>
+                <button type="button" class="filter-pill" data-filter="warning">Suspicious</button>
+                <button type="button" class="filter-pill" data-filter="safe">Safe</button>
+              </div>
+
+              <input 
+                type="text" 
+                id="historySearchInput" 
+                class="modal-input" 
+                placeholder="Search domain..." 
+                style="width: 180px; padding: 0.4rem 0.65rem;"
+              >
+
+              <button class="btn-secondary" id="exportHistoryCsvBtn" title="Export CSV table">
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+                CSV
+              </button>
+
+              <button class="btn-secondary" id="clearHistoryBtn" title="Clear scan history">
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="3 6 5 6 21 6"/><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/></svg>
+                Clear
+              </button>
+            </div>
+          </div>
+
+          <div class="history-table-container">
+            <table class="history-table">
+              <thead>
+                <tr>
+                  <th>Timestamp</th>
+                  <th>Domain / URL</th>
+                  <th>Risk Score</th>
+                  <th>Verdict</th>
+                  <th style="text-align: right;">Action</th>
+                </tr>
+              </thead>
+              <tbody id="historyTableBody">
+                <!-- Appended dynamically -->
+              </tbody>
+            </table>
+          </div>
+        </div>
+
+      </section>
+
+    </main>
+
+    <!-- ====================================================================
+         Backend Bridge & API Settings Modal
+         ==================================================================== -->
+    <div class="modal-overlay" id="settingsModal">
+      <div class="modal-card">
+        <div class="modal-header">
+          <h3 style="display: flex; align-items: center; gap: 0.5rem;">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="var(--cyber-cyan)" stroke-width="2"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg>
+            Backend & ML Model Bridge
+          </h3>
+          <button class="modal-close" id="closeSettingsBtn">&times;</button>
+        </div>
+
+        <p style="font-size: 0.85rem; color: var(--text-secondary); margin-bottom: 1.25rem;">
+          Connect Member 2 (Python / FastAPI / Flask Backend) or Member 3 (Machine Learning Model) endpoint directly to this UI.
+        </p>
+
+        <div class="modal-form-group">
+          <label class="modal-label">API Endpoint URL</label>
+          <input type="text" id="apiEndpointUrl" class="modal-input" value="http://localhost:5000/api/scan">
+        </div>
+
+        <div class="modal-form-group">
+          <label class="modal-label">Operation Mode</label>
+          <select id="engineModeSelect" class="modal-input" style="cursor: pointer;">
+            <option value="simulated">Client Autonomous Heuristics & Lexical Engine (Active)</option>
+            <option value="remote">Live REST API Proxy (Member 2 / Member 3)</option>
+          </select>
+        </div>
+
+        <div style="display: flex; justify-content: flex-end; gap: 0.75rem; margin-top: 1.5rem;">
+          <button class="btn-secondary" onclick="document.getElementById('settingsModal').classList.remove('active')">Close</button>
+          <button class="btn-scan" style="padding: 0.6rem 1.2rem; font-size: 0.85rem;" onclick="showToast('API Configuration saved successfully'); document.getElementById('settingsModal').classList.remove('active');">
+            Save Settings
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <!-- ====================================================================
+         Footer
+         ==================================================================== -->
+    <footer class="footer">
+      <div class="container">
+        <div>
+          <strong>PhishGuard AI</strong> — Built by Member 1 (Frontend Team)
+        </div>
+        <div class="footer-links">
+          <a href="#scanner" class="footer-link" onclick="document.querySelector('[data-tab=scanner]').click()">Scanner</a>
+          <a href="#dashboard" class="footer-link" onclick="document.querySelector('[data-tab=dashboard]').click()">Telemetry</a>
+          <a href="javascript:void(0)" class="footer-link" onclick="document.getElementById('apiSettingsBtn').click()">API Bridge</a>
+        </div>
+      </div>
+    </footer>
+  </div>
+
+  <!-- Application Scripts -->
+  <script src="js/scanner.js"></script>
+  <script src="js/dashboard.js"></script>
+  <script src="js/app.js"></script>
+</body>
+</html>
