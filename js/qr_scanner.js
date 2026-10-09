@@ -269,27 +269,42 @@ class QRScannerManager {
   }
 
   decodeImage(img) {
+    // Scale image down if it's extremely large (over 1200px) for optimal QR decoding performance
+    const maxDim = 1200;
+    let width = img.width;
+    let height = img.height;
+
+    if (width > maxDim || height > maxDim) {
+      if (width > height) {
+        height = Math.round((height * maxDim) / width);
+        width = maxDim;
+      } else {
+        width = Math.round((width * maxDim) / height);
+        height = maxDim;
+      }
+    }
+
     const canvas = document.createElement('canvas');
     const ctx = canvas.getContext('2d');
-    canvas.width = img.width;
-    canvas.height = img.height;
-    ctx.drawImage(img, 0, 0);
+    canvas.width = width;
+    canvas.height = height;
+    ctx.drawImage(img, 0, 0, width, height);
 
     const imageData = ctx.getImageData(0, 0, canvas.width, canvas.height);
 
     if (window.jsQR) {
       const code = jsQR(imageData.data, imageData.width, imageData.height, {
-        inversionAttempts: "dontInvert",
+        inversionAttempts: "attemptBoth",
       });
 
       if (code && code.data) {
         this.onQrFound(code.data);
       } else {
-        if (window.showToast) showToast('No valid QR code found in this image. Try another photo.', 'warning');
+        if (window.showToast) showToast('No valid QR code found in this image. Ensure lighting is clear & try another photo.', 'warning');
       }
     } else {
       // Fallback if jsQR library fails to load
-      if (window.showToast) showToast('QR processing engine unavailable. Check internet connection.', 'error');
+      if (window.showToast) showToast('QR processing engine unavailable. Check internet connection or reload page.', 'error');
     }
   }
 
@@ -330,7 +345,7 @@ class QRScannerManager {
 
       if (window.jsQR) {
         const code = jsQR(imageData.data, imageData.width, imageData.height, {
-          inversionAttempts: "dontInvert",
+          inversionAttempts: "attemptBoth",
         });
 
         if (code && code.data) {
