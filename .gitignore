@@ -9,5 +9,11 @@ __pycache__/
 .DS_Store
 Thumbs.db
 
+# Database
+*.db
+*.sqlite
+*.sqlite3
+data/*.db
+
 # Logs
 *.log

@@ -378,9 +378,9 @@ async function triggerScan() {
   sounds.beepStagePass();
   addLog('info', 'Analysis synthesis finalized. Rendering comprehensive risk report.');
 
-  // Compute analysis through scanner engine
+  // Compute analysis through backend REST API (with client fallback)
   try {
-    const report = window.phishScanner.analyze(rawUrl);
+    const report = await window.phishScanner.analyzeRemote(rawUrl);
 
     // Save into history
     if (window.securityDashboard) {

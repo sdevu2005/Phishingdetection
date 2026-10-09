@@ -71,6 +71,27 @@ class PhishScanner {
   }
 
   /**
+   * Attempt live analysis via Member 3 Backend API with fallback to client heuristics
+   */
+  async analyzeRemote(rawUrl) {
+    const endpoint = localStorage.getItem('phishguard_api_endpoint') || 'http://localhost:5000/api/scan';
+    try {
+      const response = await fetch(endpoint, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ url: rawUrl })
+      });
+      if (response.ok) {
+        const data = await response.json();
+        return data;
+      }
+    } catch (e) {
+      console.warn('Backend API offline, falling back to autonomous client heuristics:', e);
+    }
+    return this.analyze(rawUrl);
+  }
+
+  /**
    * Run full heuristic inspection on a URL
    */
   analyze(rawUrl) {
