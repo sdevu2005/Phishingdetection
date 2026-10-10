@@ -68,13 +68,19 @@ pip install -r backend/requirements.txt
 # 2. Start the backend API
 python -m uvicorn backend.main:app --host 0.0.0.0 --port 5000
 ```
-
+INFO:     Started server process [1108]
+INFO:     Waiting for application startup.
+INFO:     Application startup complete.
+ERROR:    [Errno 10048] error while attempting to bind on address ('0.0.0.0', 5000): [winerror 10048] only one usage of each socket address (protocol/network address/port) is normally permitted
+INFO:     Waiting for application shutdown.
+INFO:     Application shutdown complete.
 Open a second terminal in the project root:
 
 ```bash
 # 3. Start the frontend web server
 python -m http.server 8080
 ```
+Serving HTTP on :: port 8080 (http://[::]:8080/) ..
 
 Open the application in your browser:
 
