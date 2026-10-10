@@ -78,13 +78,17 @@ The frontend is configured to communicate with the backend at `http://localhost:
 
 ## 7. Output Screenshots
 
-![Output Screenshot](docs/output.png)
+<img width="1405" height="821" alt="image" src="https://github.com/user-attachments/assets/ea36c708-6774-46c1-af04-3289200a27cd" />
+
+<img width="1370" height="817" alt="image" src="https://github.com/user-attachments/assets/0303a95f-aa2b-4196-9d60-8bddf3d69668" />
 
 Output Description:
 
 The dashboard presents the URL scan results, risk score, and threat information in a cybersecurity-themed interface. It also provides telemetry statistics and scan history. The displayed results depend on the URL submitted and the checks successfully completed.
+<img width="1405" height="821" alt="Screenshot 2026-10-10 093623" src="https://github.com/user-attachments/assets/c881dfc4-37a2-4245-ae8d-067dfc87b25b" />
 
-*Note: Add actual screenshots of your running application to `docs/output.png` and the architecture diagram to `docs/architecture.png`.*
+<img width="1370" height="817" alt="image" src="https://github.com/user-attachments/assets/5f8cf576-9035-40c1-b00c-bca48a1e72e7" />
+<img width="1688" height="1075" alt="image" src="https://github.com/user-attachments/assets/42a4c7e0-7aa4-4009-af67-80b38909cb79" />
 
 ## 8. Future Scope
 
