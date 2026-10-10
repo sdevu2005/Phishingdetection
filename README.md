@@ -48,6 +48,14 @@ Prerequisites:
 - pip
 - A modern web browser
 - Project dependencies listed in `backend/requirements.txt`
+**Prerequisites:**
+- Python 3.10 or compatible version
+- pip
+- FastAPI
+- Uvicorn
+- Scikit-learn
+- Pydantic
+- SQLite
 
 Installation & Execution:
 
