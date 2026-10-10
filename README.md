@@ -1,115 +1,122 @@
-# PhishGuard AI — Full-Stack Phishing Detection Platform
-**Project Roles**:
-- **Member 1 — Frontend**: Cyber HUD UI/UX, Radar Scanner, SVG Gauges, Responsive Telemetry Dashboard
-- **Member 2 — Machine Learning**: Dataset Synthesis & Curation, 24-D Feature Engineering, Ensemble Classifier Training & Performance Benchmarking
-- **Member 3 — Backend**: FastAPI REST API, Threat Intelligence Engine, ML Model Integration, Input Validation & SSRF Guard
+# PhishGuard AI — AI-Powered Phishing Detection Platform
+
+OPCODE IMPACT 2026 | Hackathon Submission
+
+Team ID:OPC026
+
+## 1. Problem Statement
+
+Phishing attacks use fake websites and deceptive URLs to steal sensitive information such as passwords and banking details. Traditional security methods may fail to identify new or disguised phishing links. Users need a fast and accessible way to assess whether a URL may be malicious before visiting it.
+
+## 2. Solution Title
+PhishGuard AI — Full-Stack Phishing Detection Platform
+
+## 3. Solution Description
+
+PhishGuard AI is a web-based platform that analyzes URLs to identify potential phishing threats. It combines machine learning, URL feature extraction, and security checks such as SSL/TLS verification, DNS resolution, and redirect tracking. The platform provides a risk score from 0 to 100 and displays a threat report through an interactive dashboard. It also includes input validation, protection against Server-Side Request Forgery (SSRF), and SQLite-based scan history.
+
+## 4. Architecture Diagram
+
+<img width="1688" height="1075" alt="image" src="https://github.com/user-attachments/assets/3b67a862-82c2-4e79-ad3e-fd4200f8f40b" />
 
 
----
+Workflow:
 
-## 🌟 Architecture Overview
+1. The user enters a URL through the web interface.
+2. The frontend sends the URL to the FastAPI backend through a REST API.
+3. The backend validates the URL and checks for potentially unsafe internal network destinations.
+4. The feature extractor analyzes URL characteristics, while the machine learning model predicts the potential phishing risk.
+5. The threat intelligence module checks available SSL/TLS, DNS, redirect, and threat-signature information.
+6. The backend returns the scan report, and the frontend displays the risk score and results.
+7. Scan records and audit information are stored in the SQLite database.
 
-```
-Frontend (HTML5 / Vanilla CSS / ES6)  <---- REST API (CORS) ---->  Backend (FastAPI / Uvicorn)
-    │                                                                   │
-    ├── Scanner & Radar HUD                                             ├── Input Validator (SSRF Protection)
-    ├── Risk Report (0-100 Score)                                      ├── ML Feature Extractor (18+ features)
-    └── Telemetry Dashboard                                            ├── Threat Intelligence (SSL, DNS, Redirects)
-                                                                        └── SQLite Audit Database (data/scans.db)
-```
+## 5. Technology Stack
 
----
+- Frontend: HTML5, CSS3, JavaScript (ES6), SVG
+- Backend:Python, FastAPI, Uvicorn
+- Database: SQLite
+- Machine Learning:Scikit-learn-based model training and evaluation; Random Forest, Gradient Boosting, and Logistic Regression are benchmarked.
+- Feature Engineering: URL length, entropy, subdomains, suspicious keywords, high-risk TLDs, HTTPS status, and spoofing indicators.
+- Security:Pydantic validation, SSRF protection, SSL/TLS checks, DNS resolution, and redirect tracking.
+- API: REST API with CORS support.
 
-## 🚀 Quick Start Guide
+## 6. Quick Start Guide
 
-### 1. Start the Backend API (FastAPI)
-```powershell
+Prerequisites:
+
+- Python 3.10 or a compatible version
+- pip
+- A modern web browser
+- Project dependencies listed in `backend/requirements.txt`
+
+Installation & Execution:
+
+Run these commands from the project root directory.
+
+```bash
+# 1. Install backend dependencies
+pip install -r backend/requirements.txt
+
+# 2. Start the backend API
 python -m uvicorn backend.main:app --host 0.0.0.0 --port 5000
 ```
-- API Docs & Swagger UI: **http://localhost:5000/docs**
-- Health Check: **http://localhost:5000/api/health**
 
-### 2. Start the Frontend (Member 1)
-```powershell
+Open a second terminal in the project root:
+
+```bash
+# 3. Start the frontend web server
 python -m http.server 8080
 ```
-- Open browser at: **http://localhost:8080**
 
-The frontend automatically communicates with the backend at `http://localhost:5000/api/scan`, with an automatic fallback to client-side heuristics if the server is offline.
+Open the application in your browser:
 
----
+- Frontend: http://localhost:8080
+- API documentation: http://localhost:5000/docs
+- Health check: http://localhost:5000/api/health
 
-## 🛡️ Backend Features (Member 3)
+The frontend is configured to communicate with the backend at `http://localhost:5000/api/scan`. It can use client-side heuristic fallback when the backend is unavailable.
 
-### 1. REST API Endpoints
-- **`POST /api/scan`**: Accepts `{ "url": "..." }`, runs input validation, SSRF checks, feature extraction, ML prediction, live SSL handshake, DNS routing, and returns the comprehensive threat report.
-- **`GET /api/history`**: Returns recent audit log scans stored in SQLite.
-- **`GET /api/threat-intel`**: Returns global telemetry stats, DEFCON indicator, and active campaign vectors.
-- **`GET /api/health`**: Service availability and model status.
+## 7. Output Screenshots
 
-### 2. Machine Learning Model & Feature Extractor (`backend/model.py`)
-Extracts **18 structural, lexical, and behavioral features**:
-1. `url_len` & `host_len` (Length anomalies)
-2. `host_entropy` & `url_entropy` (Shannon entropy for algorithmic generation / DGA)
-3. `subdomains` (Subdomain stacking tiers)
-4. `dots_count` & `hyphens_count` (Punctuation cloaking)
-5. `has_ip` (Direct numeric IP address detection)
-6. `has_high_risk_tld` (Disposable TLD blacklist: `.xyz`, `.top`, `.tk`, etc.)
-7. `keyword_count` & `keyword_hits` (Targeted credential harvesting phrases)
-8. `is_spoofing` & `detected_brand` (Typosquatting & homoglyph distance)
-9. `is_https` & `has_at_symbol` (Protocol integrity and `@` prefix obfuscation)
-10. `has_double_slash_redirect` & `has_punycode` (Punycode `xn--` disguise)
+![Output Screenshot](docs/output.png)
 
-### 3. Threat Intelligence Probes (`backend/threat_intel.py`)
-- **Live SSL / TLS Socket Handshake**: Direct socket probe verifying certificate issuer, validity, and cipher strength.
-- **Authoritative DNS Resolution**: Resolves A records, reverse PTR, and ASN network details.
-- **HTTP Redirection Chain Tracker**: Follows multi-hop link shorteners (e.g. `bit.ly` -> phishing portal).
-- **Signature Threat Feeds**: Blacklist signature matching for active phishing campaigns.
+Output Description:
 
-### 4. Input Sanitization & SSRF Defense (`backend/validator.py`)
-- Pydantic schema validation for URL structure.
-- RFC 1918 private IP range filtering (`127.0.0.0/8`, `10.0.0.0/8`, `192.168.0.0/16`, `169.254.0.0/16`) to prevent Server-Side Request Forgery.
+The dashboard presents the URL scan results, risk score, and threat information in a cybersecurity-themed interface. It also provides telemetry statistics and scan history. The displayed results depend on the URL submitted and the checks successfully completed.
 
----
+*Note: Add actual screenshots of your running application to `docs/output.png` and the architecture diagram to `docs/architecture.png`.*
 
-## 🤖 Machine Learning Pipeline (Member 2)
+## 8. Future Scope
 
-### 1. Dataset Generation & Curation (`backend/dataset_generator.py`)
-- Balanced benchmark dataset of **2,400 labeled samples** (`1,200 Phishing` vs `1,200 Legitimate`).
-- Synthesizes zero-day attack patterns: typosquatting, DGA entropy, subdomain stacking, IP-based destinations, `@` credential obfuscation, disposable TLDs (`.xyz`, `.top`, `.tk`), and punycode.
-- Persisted at [data/phishing_dataset.csv](file:///c:/Users/GP/OneDrive/Desktop/Hack/data/phishing_dataset.csv).
+- Integrate additional trusted phishing threat feeds and reputation services.
+- Improve detection accuracy using larger, more diverse datasets and further model evaluation.
+- Add browser-extension support for real-time URL checking.
+- Enhance reporting with downloadable scan reports and historical trend analysis.
+- Deploy the platform to a secure cloud environment for wider accessibility.
 
-### 2. Feature Extraction (`backend/feature_pipeline.py`)
-- Extracts **24 numerical & lexical features** per URL in `< 0.1ms`.
-- Top predictive signals: `is_https`, `has_high_risk_tld`, `keyword_count`, `digits_count`, `is_spoofing`, `host_entropy`, and `subdomain_depth`.
+## 9. Team Contributions
 
-### 3. Model Training & Evaluation (`backend/train_model.py`)
-- Benchmarked **Random Forest**, **Gradient Boosting**, and **Logistic Regression**.
-- Evaluated via **Stratified 5-Fold Cross Validation** on holdout test splits.
-- Production artifact exported to [data/phishguard_model.joblib](file:///c:/Users/GP/OneDrive/Desktop/Hack/data/phishguard_model.joblib).
-- Comprehensive evaluation report at [data/model_evaluation_report.md](file:///c:/Users/GP/OneDrive/Desktop/Hack/data/model_evaluation_report.md).
+| Member Name | Contribution |
+|---|---|
+| Georgekutty Senni | Frontend development: cybersecurity UI/UX, radar scanner, SVG gauges, and responsive dashboard |
+| Aswathy Shabu | Machine learning: dataset generation, feature engineering, model training, and performance evaluation |
+| Devanantha S | Backend development: FastAPI endpoints, threat intelligence, ML integration, input validation, and SSRF protection |
 
+## 10. Tools Used
+
+| Tool / Platform | Purpose / Why Used |
+|---|---|
+| Python | Backend development and machine learning |
+| FastAPI | Building REST API endpoints |
+| Uvicorn | Running the backend server |
+| Scikit-learn | Training and evaluating machine learning classifiers |
+| SQLite | Storing scan history and audit records |
+| HTML5, CSS3, JavaScript | Building the interactive frontend |
+| Git and GitHub | Version control and project collaboration |
+| AI tools, if used | Assisting with implementation ideas, debugging, documentation, or UI development; specify the tools actually used by the team |
 
 ---
 
-## 📂 Project Structure
-```
-Hack/
-├── backend/
-│   ├── main.py             # FastAPI router, CORS middleware, API endpoints
-│   ├── model.py            # ML feature extractor & ensemble classifier
-│   ├── threat_intel.py     # Live SSL probe, DNS resolver, redirection tracer
-│   ├── validator.py        # Pydantic schema validation & SSRF protection
-│   ├── database.py         # SQLite persistence & telemetry statistics
-│   └── requirements.txt    # Backend dependencies
-├── data/
-│   └── scans.db            # Persistent SQLite database
-├── css/
-│   └── style.css           # Cyber-Defense design system & responsive layout
-├── js/
-│   ├── scanner.js          # Client bridge connecting to backend API
-│   ├── dashboard.js        # KPI metrics, SVG trend chart, audit log table
-│   └── app.js              # Application controller, audio synth, pipeline HUD
-├── index.html              # Frontend application page
-└── README.md               # Platform documentation
-```
+Project:PhishGuard AI  
+Event:OPCODE IMPACT 2026  
+Track: Industry
